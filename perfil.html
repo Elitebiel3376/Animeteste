@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil - NeonFlix</title>
+<style>
+body{margin:0;padding:0;background:#000;color:#fff;font-family:Arial,sans-serif;}
+header{display:flex;align-items:center;justify-content:space-between;padding:15px 30px;background:#0a0a0a;border-bottom:2px solid red;}
+.logo{color:red;font-weight:bold;font-size:2em;text-shadow:0 0 10px red;}
+.back-btn{background:red;color:#fff;padding:8px 14px;border-radius:16px;text-decoration:none;}
+.container{padding:30px;display:flex;flex-direction:column;align-items:center;gap:20px;}
+.avatar{width:120px;height:120px;border-radius:50%;border:3px solid red;box-shadow:0 0 20px red;}
+.username{font-size:1.8rem;color:red;text-shadow:0 0 8px red;}
+.btn-edit{background:red;color:#fff;padding:10px 20px;border-radius:30px;border:none;font-weight:bold;cursor:pointer;transition:.3s;box-shadow:0 0 20px red;text-shadow:0 0 5px black;}
+.btn-edit:hover{background:#ff3333;box-shadow:0 0 40px red,0 0 10px white;}
+.fav-section{width:90%;max-width:1000px;}
+.fav-section h3{color:red;text-shadow:0 0 10px red;margin-bottom:15px;}
+.fav-list{display:flex;overflow-x:auto;gap:15px;padding-bottom:15px;}
+.fav-list::-webkit-scrollbar{height:8px;}
+.fav-list::-webkit-scrollbar-thumb{background:red;border-radius:10px;}
+.fav-card{position:relative;width:150px;height:220px;border-radius:10px;overflow:hidden;box-shadow:0 0 10px #ff000055;transition:.3s;}
+.fav-card:hover{transform:scale(1.1);box-shadow:0 0 25px red,0 0 40px #ff0000aa,0 0 60px #ff0000aa;}
+.fav-card img{width:100%;height:100%;object-fit:cover;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">NEONFLIX</div>
+  <a href="index.html" class="back-btn">⬅ Voltar</a>
+</header>
+
+<div class="container">
+  <img id="avatar" src="imagens/avatar.jpg" alt="Avatar" class="avatar">
+  <div id="username" class="username">Usuário NeonFlix</div>
+  <button class="btn-edit" onclick="editarPerfil()">Editar Perfil</button>
+
+  <div class="fav-section">
+    <h3>Meus Favoritos</h3>
+    <div id="fav-list" class="fav-list"></div>
+  </div>
+</div>
+
+<script>
+function renderFavoritos(){
+  const favs = JSON.parse(localStorage.getItem('favoritos')) || [];
+  const favListEl = document.getElementById('fav-list');
+  favListEl.innerHTML = '';
+  favs.forEach(nome=>{
+    const card = document.createElement('div');
+    card.className='fav-card';
+    card.innerHTML=`<img src="imagens/${nome.replace(/ /g,'')}.jpg" alt="${nome}">`;
+    favListEl.appendChild(card);
+  });
+}
+
+function editarPerfil(){
+  const novoNome = prompt("Digite seu nome:", document.getElementById('username').textContent);
+  if(novoNome){
+    document.getElementById('username').textContent = novoNome;
+  }
+}
+
+/* Inicializa favoritos */
+renderFavoritos();
+</script>
+</body>
+</html>

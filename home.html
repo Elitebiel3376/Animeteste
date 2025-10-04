@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeonFlix - Animes</title>
+<style>
+body{margin:0;padding:0;background:#000;color:#fff;font-family:Arial,sans-serif;}
+header{display:flex;justify-content:space-between;align-items:center;padding:15px 30px;background:#0a0a0a;border-bottom:2px solid red;}
+.logo{font-size:2em;font-weight:bold;color:red;text-shadow:0 0 10px red;}
+.menu{display:flex;gap:15px;}
+.menu button{background:red;color:#fff;padding:8px 16px;border-radius:20px;border:none;font-weight:bold;cursor:pointer;transition:.3s;text-shadow:0 0 5px black;}
+.menu button:hover{background:#ff3333;box-shadow:0 0 20px red,0 0 5px white;}
+.catalogo{display:flex;overflow-x:auto;padding:20px;gap:15px;}
+.catalogo::-webkit-scrollbar{height:8px;}
+.catalogo::-webkit-scrollbar-thumb{background:red;border-radius:10px;}
+.anime{position:relative;flex:0 0 auto;width:200px;height:280px;border-radius:10px;overflow:hidden;box-shadow:0 0 10px #ff000055;transition:.3s;}
+.anime:hover{transform:scale(1.1);box-shadow:0 0 25px red,0 0 40px #ff0000aa,0 0 60px #ff0000aa;}
+.anime img.capa{width:100%;height:100%;object-fit:cover;display:block;transition:.3s;}
+.overlay{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:end;justify-content:center;padding-bottom:10px;}
+.btn{background:red;color:white;padding:10px 20px;border-radius:30px;font-weight:bold;text-shadow:0 0 5px black;cursor:pointer;transition:.3s;border:none;font-size:1em;animation:pulse 1.5s infinite;}
+.btn:hover{background:#ff3333;box-shadow:0 0 40px red,0 0 10px white;}
+.fav-btn{position:absolute;top:8px;right:8px;width:30px;height:30px;background:red;color:#fff;border:none;border-radius:50%;cursor:pointer;font-weight:bold;box-shadow:0 0 10px red;text-align:center;line-height:30px;}
+.fav-btn.active{background:#ff3333;}
+@keyframes pulse{0%{box-shadow:0 0 20px red,0 0 5px white;}50%{box-shadow:0 0 40px red,0 0 10px white;}100%{box-shadow:0 0 20px red,0 0 5px white;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">NEONFLIX</div>
+  <div class="menu">
+    <button onclick="window.location.href='perfil.html'">Perfil</button>
+    <button onclick="window.location.href='catalogo.html'">Catálogo</button>
+  </div>
+</header>
+
+<h2 style="color:red;text-shadow:0 0 10px red;margin:20px;">Animes</h2>
+<div class="catalogo" id="catalogo"></div>
+
+<script>
+const animes = [
+  {nome:"Demon Slayer", capa:"imagens/DemonSlayer.jpg", player:"player-demonslayer.html"},
+  {nome:"Naruto", capa:"imagens/Naruto.jpg", player:"player-naruto.html"},
+  {nome:"One Piece", capa:"imagens/OnePiece.jpg", player:"player-onepiece.html"},
+  {nome:"Arcane", capa:"imagens/Arcane.jpg", player:"player-arcane.html"},
+  {nome:"Stranger Things", capa:"imagens/StrangerThings.jpg", player:"player-stranger.html"},
+  {nome:"Circo Digital", capa:"imagens/CircoDigital.jpg", player:"player-circodigital.html"}
+];
+
+let favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
+
+const catalogoEl = document.getElementById('catalogo');
+animes.forEach(anime=>{
+  const div = document.createElement('div');
+  div.className='anime';
+  div.innerHTML = `
+    <img class="capa" src="${anime.capa}" alt="${anime.nome}">
+    <div class="overlay">
+      <button class="btn" onclick="assistir('${anime.player}')">ASSISTIR</button>
+    </div>
+    <button class="fav-btn ${favoritos.includes(anime.nome)?'active':''}" onclick="toggleFavorito('${anime.nome}', this)">❤</button>
+  `;
+  catalogoEl.appendChild(div);
+});
+
+function assistir(playerLink){
+  window.location.href = playerLink;
+}
+
+function toggleFavorito(nome, btn){
+  if(favoritos.includes(nome)){
+    favoritos = favoritos.filter(f=>f!==nome);
+    btn.classList.remove('active');
+  } else {
+    favoritos.push(nome);
+    btn.classList.add('active');
+  }
+  localStorage.setItem('favoritos', JSON.stringify(favoritos));
+}
+</script>
+</body>
+</html>
