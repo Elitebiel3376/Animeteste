@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NEONFLIX — Admin (Gerar usuário)</title>
+<style>
+  :root{
+    --bg:#000;
+    --card:#0b0b0b;
+    --accent:#ff2d2d;
+    --text:#fff;
+  }
+  body{
+    margin:0;
+    font-family:Inter,Arial,sans-serif;
+    background:linear-gradient(180deg,#000 0%, #070707 100%);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 26px;
+    border-bottom:3px solid rgba(255,45,45,0.06);
+  }
+  .logo{
+    color:var(--accent);
+    font-weight:800;
+    text-shadow:0 0 10px rgba(255,45,45,0.22);
+    letter-spacing:2px;
+  }
+  main{max-width:1100px;margin:24px auto;padding:0 18px;}
+  .grid{
+    display:grid;
+    grid-template-columns: 360px 1fr;
+    gap:18px;
+  }
+
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:16px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.6);
+  }
+
+  label{display:block;font-size:13px;margin-bottom:6px;color:#ddd}
+  input[type="text"]{
+    width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);
+    background:#0f0f0f;color:#fff;font-size:14px;box-sizing:border-box;
+  }
+  .row{display:flex;gap:8px;margin-top:10px;}
+  button{
+    background:var(--accent);color:#000;border:none;padding:10px 12px;border-radius:10px;font-weight:700;cursor:pointer;
+    box-shadow:0 6px 18px rgba(255,45,45,0.14);
+  }
+  button.ghost{background:transparent;color:var(--accent);border:1px solid rgba(255,45,45,0.08);box-shadow:none;}
+  .generated{
+    margin-top:12px;padding:10px;border-radius:8px;background:#070707;border:1px solid rgba(255,255,255,0.03);display:flex;justify-content:space-between;align-items:center;
+  }
+  .small{font-size:13px;color:#bbb}
+  .list-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left}
+  th{color:#ddd;font-weight:700;font-size:13px}
+  .actions button{margin-right:6px;padding:6px 8px;border-radius:8px;border:none;cursor:pointer}
+  .danger{background:#611010;color:#fff}
+  .muted{color:#999;font-size:13px}
+  .search{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:#0f0f0f;color:#fff}
+  .tools{display:flex;gap:8px;align-items:center}
+  @media (max-width:900px){
+    .grid{grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">NEONFLIX — Admin</div>
+  <div class="muted">Painel local • use com cuidado</div>
+</header>
+
+<main>
+  <div class="grid">
+    <!-- left: criar usuário -->
+    <div class="card">
+      <h3 style="margin:0 0 8px;color:var(--accent)">Criar novo usuário</h3>
+      <div class="small">Digite só o login (ex.: lexa123). A senha será gerada com 8 números.</div>
+
+      <div style="margin-top:12px">
+        <label for="newLogin">Login</label>
+        <input id="newLogin" type="text" placeholder="ex.: lexa123" autocomplete="off" />
+      </div>
+
+      <div class="row">
+        <button id="btnGenCreate">Gerar senha e criar</button>
+        <button class="ghost" id="btnGenOnly">Gerar só senha</button>
+      </div>
+
+      <div id="generatedBox" class="generated" style="display:none;">
+        <div>
+          <div class="small">Senha gerada</div>
+          <div id="genPassword" style="font-weight:800;font-size:18px;letter-spacing:2px"></div>
+          <div class="small" style="margin-top:6px;color:#999">Copie e entregue para o usuário</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button id="btnCopy">Copiar</button>
+          <button class="ghost" id="btnClear">Limpar</button>
+        </div>
+      </div>
+
+      <div style="margin-top:14px">
+        <div class="small">Opções:</div>
+        <div class="row" style="margin-top:8px">
+          <button id="btnExport">Exportar CSV</button>
+          <button class="ghost" id="btnClearAll">Apagar todos</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- right: lista -->
+    <div class="card">
+      <div class="list-header">
+        <h3 style="margin:0;color:var(--accent)">Usuários criados</h3>
+        <div class="tools">
+          <input id="search" class="search" placeholder="Buscar login..." />
+        </div>
+      </div>
+
+      <div id="tableWrap"></div>
+      <div id="empty" class="muted" style="display:none;padding:12px;text-align:center">Nenhum usuário criado.</div>
+    </div>
+  </div>
+</main>
+
+<script>
+/*
+  Admin UI — armazenamento:
+   - chave localStorage: 'usuarios' -> objeto { login: senha, ... }
+   - chave opcional: 'usuariosAtivos' não tocada aqui (usada no login)
+*/
+
+// helpers
+function readUsers(){
+  try {
+    const raw = localStorage.getItem('usuarios') || '{}';
+    return JSON.parse(raw);
+  } catch(e) { return {}; }
+}
+function writeUsers(obj){
+  localStorage.setItem('usuarios', JSON.stringify(obj));
+}
+function gen8nums(){
+  let s = '';
+  for(let i=0;i<8;i++) s += String(Math.floor(Math.random()*10));
+  return s;
+}
+function showGenerated(pwd){
+  document.getElementById('generatedBox').style.display = 'flex';
+  document.getElementById('genPassword').textContent = pwd;
+}
+function hideGenerated(){
+  document.getElementById('generatedBox').style.display = 'none';
+  document.getElementById('genPassword').textContent = '';
+}
+function sanitizeLogin(v){
+  return String(v || '').trim();
+}
+function renderTable(filter=''){
+  const obj = readUsers();
+  const keys = Object.keys(obj).sort();
+  if(filter) {
+    const f = filter.toLowerCase();
+    keys = keys.filter(k => k.toLowerCase().includes(f));
+  }
+  const wrap = document.getElementById('tableWrap');
+  if(keys.length === 0){
+    wrap.innerHTML = '';
+    document.getElementById('empty').style.display = 'block';
+    return;
+  }
+  document.getElementById('empty').style.display = 'none';
+  let html = `<table><thead><tr><th>Login</th><th>Senha</th><th style="width:170px">Ações</th></tr></thead><tbody>`;
+  keys.forEach(k=>{
+    const pwd = obj[k];
+    html += `<tr>
+      <td><strong>${escapeHtml(k)}</strong></td>
+      <td class="muted">${escapeHtml(pwd)}</td>
+      <td class="actions">
+        <button onclick="copyPwd('${escapeJs(k)}')">Copiar</button>
+        <button onclick="deleteUser('${escapeJs(k)}')" class="danger">Apagar</button>
+      </td>
+    </tr>`;
+  });
+  html += `</tbody></table>`;
+  wrap.innerHTML = html;
+}
+
+// actions
+document.getElementById('btnGenOnly').addEventListener('click', ()=>{
+  const pwd = gen8nums();
+  showGenerated(pwd);
+});
+document.getElementById('btnGenCreate').addEventListener('click', ()=>{
+  const loginInput = sanitizeLogin(document.getElementById('newLogin').value);
+  if(!loginInput){
+    alert('Digite um login (ex.: lexa123)');
+    return;
+  }
+  const users = readUsers();
+  if(users[loginInput]){
+    alert('Login já existe. Escolha outro ou apague o existente.');
+    return;
+  }
+  const pwd = gen8nums();
+  users[loginInput] = pwd;
+  writeUsers(users);
+  showGenerated(pwd);
+  document.getElementById('newLogin').value = '';
+  renderTable(document.getElementById('search').value);
+});
+
+// copiar senha gerada
+document.getElementById('btnCopy').addEventListener('click', ()=>{
+  const text = document.getElementById('genPassword').textContent;
+  if(!text) return;
+  navigator.clipboard.writeText(text).then(()=> alert('Senha copiada.'));
+});
+document.getElementById('btnClear').addEventListener('click', ()=> hideGenerated());
+
+// apagar usuario
+function deleteUser(login){
+  if(!confirm(`Apagar usuário ${login}?`)) return;
+  const users = readUsers();
+  delete users[login];
+  writeUsers(users);
+  renderTable(document.getElementById('search').value);
+}
+
+// copiar senha de usuário na tabela
+function copyPwd(login){
+  const users = readUsers();
+  if(!users[login]) { alert('Usuário não encontrado'); return; }
+  navigator.clipboard.writeText(users[login]).then(()=> alert('Senha copiada para ' + login));
+}
+
+// export CSV
+document.getElementById('btnExport').addEventListener('click', ()=>{
+  const users = readUsers();
+  const keys = Object.keys(users);
+  if(keys.length === 0){ alert('Nenhum usuário para exportar'); return; }
+  let csv = 'login,senha\n';
+  keys.forEach(k=> csv += `${k},${users[k]}\n`);
+  // força download
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'usuarios_neonflix.csv'; document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+});
+
+// limpar tudo
+document.getElementById('btnClearAll').addEventListener('click', ()=>{
+  if(!confirm('Apagar TODOS os usuários criados?')) return;
+  writeUsers({});
+  hideGenerated();
+  renderTable();
+});
+
+// limpar todos via botão
+document.getElementById('btnClearAll').addEventListener('click', ()=>{});
+
+// busca
+document.getElementById('search').addEventListener('input', (e)=>{
+  renderTable(e.target.value);
+});
+
+// util helpers
+function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeJs(s){ return String(s).replace(/'/g,"\\'"); }
+
+// inicializa UI
+renderTable();
+</script>
+</body>
+</html>
