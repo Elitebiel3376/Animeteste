@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debi Loide 1 - Player</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    .video-container {
+      position: relative;
+      padding-top: 56.25%;
+      height: 0;
+      overflow: hidden;
+      max-width: 100%;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: red;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 1000;
+    }
+    .back-btn:hover {
+      background: #ff3333;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="back-btn" onclick="window.history.back()">Voltar</button>
+
+  <div class="video-container">
+    <iframe src="https://drive.google.com/file/d/0ByfEzfBLMGseS0ZjM25OQVl1TVE/preview" allow="autoplay"></iframe>
+  </div>
+
+</body>
+</html>
