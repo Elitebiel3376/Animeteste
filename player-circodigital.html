@@ -1,68 +1,139 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Player - Circo Digital</title>
-<style>
-body{margin:0;background:#000;color:#fff;font-family:Arial,sans-serif;}
-header{display:flex;align-items:center;justify-content:space-between;padding:15px 30px;background:#0a0a0a;border-bottom:2px solid red;}
-.logo{color:red;font-weight:bold;font-size:1.8rem;}
-.back-btn{background:red;color:#fff;padding:8px 14px;border-radius:16px;text-decoration:none;font-weight:bold;}
-.container{padding:30px;display:flex;flex-direction:column;align-items:center;gap:18px;}
-#titulo{color:red;font-size:1.6rem;text-shadow:0 0 8px red;}
-.video-container{width:90%;max-width:1000px;aspect-ratio:16/9;}
-iframe{width:100%;height:100%;border:none;border-radius:10px;box-shadow:0 0 30px red;}
-.episodios{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
-.episodios button{background:#b30000;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;transition:0.2s;font-weight:bold;}
-.episodios button:hover{background:#ff3333;box-shadow:0 0 20px red;}
-.msg{color:#ccc;text-align:center;margin-top:10px;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circo Digital - Player</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      width: 100%;
+      background: #0a0a0a;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid red;
+    }
+    .logo {
+      color: red;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    .back-btn {
+      background: red;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .container {
+      padding: 30px;
+      width: 100%;
+      max-width: 1000px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+    #titulo {
+      color: red;
+      font-size: 1.6rem;
+      text-shadow: 0 0 8px red;
+    }
+    .video-container {
+      width: 100%;
+      aspect-ratio: 16/9;
+      max-width: 1000px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 30px red;
+      background: #000;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .episodios {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .episodios button {
+      background: #b30000;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .episodios button:hover {
+      background: #ff3333;
+      box-shadow: 0 0 20px red;
+    }
+    .msg {
+      color: #ccc;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-<header>
-  <div class="logo">NEONFLIX</div>
-  <a href="home.html" class="back-btn">⬅ Voltar</a>
-</header>
+  <header>
+    <div class="logo">NEONFLIX</div>
+    <a href="home.html" class="back-btn">⬅ Voltar</a>
+  </header>
 
-<main class="container">
-  <div id="titulo">Circo Digital</div>
-  <div class="video-container">
-    <iframe id="player" src="" allowfullscreen></iframe>
+  <div class="container">
+    <div id="titulo">Circo Digital</div>
+    <div class="video-container">
+      <iframe id="player"
+        src="https://www.youtube.com/embed/HwAPLk_sQ3w?autoplay=1"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="episodios" id="episodios"></div>
+    <div id="info" class="msg">Assistindo EP 1</div>
   </div>
-  <div id="episodios" class="episodios"></div>
-  <div id="info" class="msg">Escolha um episódio para começar.</div>
-</main>
 
-<script>
-const player = document.getElementById('player');
-const episodiosEl = document.getElementById('episodios');
-const infoEl = document.getElementById('info');
+  <script>
+    const player = document.getElementById('player');
+    const episodiosEl = document.getElementById('episodios');
+    const infoEl = document.getElementById('info');
 
-/* Lista de episódios YouTube */
-const listaEps = [
-  "HwAPLk_sQ3w",
-  "4ofJpOEXrZs",
-  "bKjfw77cxeQ",
-  "Q9KWcWKo2T8",
-  "L4p2gN2CzsA",
-  "mOvhHim78YA"
-];
+    const listaEps = [
+      "HwAPLk_sQ3w",
+      "4ofJpOEXrZs",
+      "bKjfw77cxeQ",
+      "Q9KWcWKo2T8",
+      "L4p2gN2CzsA",
+      "mOvhHim78YA"
+    ];
 
-/* Cria botões automaticamente */
-listaEps.forEach((id, index) => {
-  const b = document.createElement('button');
-  b.textContent = `EP ${index + 1}`;
-  b.onclick = () => {
-    player.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
-    infoEl.textContent = `Assistindo EP ${index + 1}`;
-  };
-  episodiosEl.appendChild(b);
-});
-
-/* Começa pelo primeiro episódio */
-player.src = `https://www.youtube.com/embed/${listaEps[0]}?autoplay=1`;
-infoEl.textContent = "Assistindo EP 1";
-</script>
+    listaEps.forEach((id, index) => {
+      const b = document.createElement('button');
+      b.textContent = `EP ${index + 1}`;
+      b.onclick = () => {
+        player.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+        infoEl.textContent = `Assistindo EP ${index + 1}`;
+      };
+      episodiosEl.appendChild(b);
+    });
+  </script>
 </body>
 </html>
