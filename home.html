@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NeonFlix</title>
 <style>
-body{margin:0; background:#000; color:#fff; font-family:Arial,sans-serif;}
-header{display:flex; justify-content:space-between; align-items:center; padding:15px 30px; background:#0a0a0a; border-bottom:2px solid red;}
-.logo{font-size:2em; font-weight:bold; color:red; text-shadow:0 0 10px red;}
-.menu{display:flex; gap:15px;}
-.menu button{background:red; color:#fff; border:none; padding:8px 14px; border-radius:16px; font-weight:bold; cursor:pointer; transition:0.2s;}
-.menu button:hover{background:#ff3333; box-shadow:0 0 20px red;}
-.section-title{color:red; text-shadow:0 0 10px red; margin:20px; font-size:1.5em;}
-.catalogo{display:flex; overflow-x:auto; padding:0 20px 20px 20px; gap:15px;}
+body{margin:0;background:#000;color:#fff;font-family:Arial,sans-serif;}
+header{display:flex;justify-content:space-between;align-items:center;padding:15px 30px;background:#0a0a0a;border-bottom:2px solid red;}
+.logo{font-size:2em;font-weight:bold;color:red;text-shadow:0 0 10px red;}
+.menu{display:flex;gap:15px;}
+.menu button{background:red;color:#fff;border:none;padding:8px 14px;border-radius:16px;font-weight:bold;cursor:pointer;transition:0.2s;}
+.menu button:hover{background:#ff3333;box-shadow:0 0 20px red;}
+.section-title{color:red;text-shadow:0 0 10px red;margin:20px;font-size:1.5em;}
+.catalogo{display:flex;overflow-x:auto;padding:0 20px 20px 20px;gap:15px;}
 .catalogo::-webkit-scrollbar{height:8px;}
-.catalogo::-webkit-scrollbar-thumb{background:red; border-radius:10px;}
-.anime{position:relative; flex:0 0 auto; width:200px; height:280px; border-radius:10px; overflow:hidden; box-shadow:0 0 10px #ff000055; transition:.3s;}
-.anime:hover{transform:scale(1.1); box-shadow:0 0 25px red,0 0 40px #ff0000aa,0 0 60px #ff0000aa;}
-.anime img.capa{width:100%; height:100%; object-fit:cover; display:block; transition:.3s;}
-.overlay{position:absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:end; justify-content:center; padding-bottom:10px;}
-.btn{background:red; color:white; padding:10px 20px; border-radius:30px; font-weight:bold; text-shadow:0 0 5px black; cursor:pointer; transition:.3s; border:none; font-size:1em; animation:pulse 1.5s infinite;}
-.btn:hover{background:#ff3333; box-shadow:0 0 40px red,0 0 10px white;}
+.catalogo::-webkit-scrollbar-thumb{background:red;border-radius:10px;}
+.anime{position:relative;flex:0 0 auto;width:200px;height:280px;border-radius:10px;overflow:hidden;box-shadow:0 0 10px #ff000055;transition:.3s;}
+.anime:hover{transform:scale(1.1);box-shadow:0 0 25px red,0 0 40px #ff0000aa,0 0 60px #ff0000aa;}
+.anime img.capa{width:100%;height:100%;object-fit:cover;display:block;transition:.3s;}
+.overlay{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:end;justify-content:center;padding-bottom:10px;}
+.btn{background:red;color:white;padding:10px 20px;border-radius:30px;font-weight:bold;text-shadow:0 0 5px black;cursor:pointer;transition:.3s;border:none;font-size:1em;animation:pulse 1.5s infinite;}
+.btn:hover{background:#ff3333;box-shadow:0 0 40px red,0 0 10px white;}
 @keyframes pulse{0%{box-shadow:0 0 20px red,0 0 5px white;}50%{box-shadow:0 0 40px red,0 0 10px white;}100%{box-shadow:0 0 20px red,0 0 5px white;}}
 </style>
 </head>
@@ -38,24 +38,19 @@ header{display:flex; justify-content:space-between; align-items:center; padding:
 <div id="conteudo"></div>
 
 <script>
-// Lista de conteúdo com player individual
 const conteudo = [
-  // ANIMES
   {nome:"Demon Slayer", capa:"DemonSlayer.jpg", tipo:"Animes", player:"player-demonslayer.html"},
   {nome:"Circo Digital", capa:"CircoDigital.jpg", tipo:"Animes", player:"player-circo.html"},
   {nome:"Naruto", capa:"Naruto.jpg", tipo:"Animes", player:"player-naruto.html"},
   {nome:"One Piece", capa:"OnePiece.jpg", tipo:"Animes", player:"player-onepiece.html"},
-
-  // SÉRIES
   {nome:"Stranger Things", capa:"StrangerThings.jpg", tipo:"Series", player:"player-stranger.html"},
   {nome:"Arcane", capa:"Arcane.jpg", tipo:"Series", player:"player-arcane.html"},
-
-  // FILMES
   {nome:"Vingadores", capa:"Vingadores.jpg", tipo:"Filmes", player:"player-vingadores.html"},
   {nome:"Matrix", capa:"Matrix.jpg", tipo:"Filmes", player:"player-matrix.html"},
   {nome:"Os Três Patetas", capa:"TresPatetas.jpg", tipo:"Filmes", player:"player-trespatetas.html"},
   {nome:"Debi & Loide", capa:"DebiLoide.jpg", tipo:"Filmes", player:"player-debiloide.html"},
-  {nome:"As Férias de Mr. Bean", capa:"MrBeanFerias.jpg", tipo:"Filmes", player:"player-mrbean.html"}
+  {nome:"As Férias de Mr. Bean", capa:"MrBean.jpg", tipo:"Filmes", player:"player-mrbean.html"},
+  {nome:"Todo Mundo em Pânico 4", capa:"TodoMundoPanico4.jpg", tipo:"Filmes", player:"player-panico4.html"}
 ]; 
 
 let conteudoFiltrado = conteudo;
