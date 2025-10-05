@@ -1,92 +1,139 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>NEONFLIX — Login</title>
 <style>
-body {
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#000;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  height:100vh;
-}
-.login-box {
-  background:#0a0a0a;
-  padding:30px;
-  border-radius:12px;
-  box-shadow:0 0 30px #ff000055;
-  width:320px;
-}
-.login-box h2{
-  color:red;
-  text-align:center;
-  margin-bottom:24px;
-}
-.login-box label{display:block;margin:8px 0 4px;font-size:14px;}
-.login-box input{
-  width:100%;padding:10px;border-radius:8px;border:none;background:#111;color:#fff;margin-bottom:12px;font-size:14px;
-}
-.login-box button{
-  width:100%;padding:12px;border:none;border-radius:8px;background:red;color:#fff;font-weight:bold;font-size:16px;cursor:pointer;
-  transition:.3s;
-}
-.login-box button:hover{background:#ff3333;}
-.login-box .small{font-size:12px;color:#999;margin-top:8px;text-align:center;}
+  :root{--bg:#000;--accent:#ff2d2d;--card:#0b0b0b;--text:#fff}
+  body{margin:0;background:linear-gradient(180deg,#000,#070707);color:var(--text);font-family:Arial,Helvetica,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh}
+  .box{width:360px;background:linear-gradient(180deg,#0d0d0d,#0a0a0a);padding:28px;border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,0.7);border:1px solid rgba(255,45,45,0.06)}
+  .logo{color:var(--accent);font-weight:800;font-size:22px;text-align:center;margin-bottom:14px;text-shadow:0 0 12px rgba(255,45,45,0.12)}
+  label{display:block;font-size:13px;color:#ddd;margin-top:8px}
+  input{width:100%;padding:10px;border-radius:8px;border:none;background:#111;color:#fff;margin-top:6px;box-sizing:border-box}
+  .row{display:flex;gap:8px;margin-top:14px}
+  button{flex:1;padding:10px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+  .btn-primary{background:var(--accent);color:#000;box-shadow:0 6px 18px rgba(255,45,45,0.18)}
+  .btn-secondary{background:#222;color:#fff;border:1px solid rgba(255,255,255,0.04)}
+  .small{font-size:12px;color:#bbb;margin-top:10px;text-align:center}
+  .admin-toggle{margin-top:12px;text-align:center}
+  .admin-panel{margin-top:12px;padding:12px;border-radius:8px;background:#070707;border:1px solid rgba(255,255,255,0.02);display:none}
+  .admin-panel input{margin-top:8px}
+  .msg{margin-top:8px;color:#ffd700;font-weight:700;text-align:center}
 </style>
 </head>
 <body>
-<div class="login-box">
-  <h2>Login NEONFLIX</h2>
+
+<div class="box">
+  <div class="logo">NEONFLIX</div>
+
   <label for="login">Login</label>
-  <input type="text" id="login" placeholder="Digite seu login" autocomplete="off">
-  
+  <input id="login" type="text" placeholder="ex.: lexa123" autocomplete="off">
+
   <label for="senha">Senha</label>
-  <input type="password" id="senha" placeholder="Digite sua senha" autocomplete="off">
-  
-  <button onclick="entrar()">Entrar</button>
-  <div class="small">
-    <a href="https://wa.me/55SEUNUMERO" style="color:red;text-decoration:none;">Criar conta / Esqueci a senha</a>
+  <input id="senha" type="password" placeholder="Digite sua senha">
+
+  <div class="row">
+    <button class="btn-primary" onclick="entrar()">Entrar</button>
+    <button class="btn-secondary" onclick="criarSenha()">Criar senha</button>
   </div>
+
+  <div class="admin-toggle">
+    <button class="btn-secondary" onclick="toggleAdmin()">Admin</button>
+  </div>
+
+  <div id="adminPanel" class="admin-panel" aria-hidden="true">
+    <div style="font-size:13px;color:#ddd">Acesso administrativo</div>
+    <input id="adminLogin" type="text" placeholder="Login Admin (ex.: Administração)">
+    <input id="adminPass" type="password" placeholder="Senha Admin">
+    <div class="row" style="margin-top:10px">
+      <button class="btn-primary" style="flex:1" onclick="adminLogin()">Entrar Admin</button>
+      <button class="btn-secondary" style="flex:1" onclick="toggleAdmin()">Fechar</button>
+    </div>
+    <div class="small" style="margin-top:8px">Login Admin: <strong>Administração</strong> — Senha: <strong>1234</strong></div>
+  </div>
+
+  <div id="msg" class="msg" style="display:none"></div>
+  <div class="small">Se não tiver senha, clique <strong>Criar senha</strong> para pedir via WhatsApp.</div>
 </div>
 
 <script>
+/*
+  Integração com admin.html e admin panel:
+  - Entrar normal: verifica localStorage 'usuarios' (obj {login:senha})
+  - Ao logar com sucesso, salva localStorage 'usuariosAtivos' como array de {user, senha, ts}
+  - Criar senha => abre WhatsApp
+  - Botão Admin exibe painel; credenciais fixas: Administração / 1234 -> redireciona para admin.html
+*/
+
+function lerUsuarios(){
+  try{ return JSON.parse(localStorage.getItem('usuarios')||'{}'); }
+  catch(e){ return {}; }
+}
+
+function salvarAtivo(user, senha){
+  const chave = 'usuariosAtivos';
+  let arr = JSON.parse(localStorage.getItem(chave)||'[]');
+  // remove qualquer outra entrada que use a mesma senha por outro user (bloqueio)
+  const conflito = arr.find(u=>u.senha === senha && u.user !== user);
+  if(conflito) return {ok:false, reason:'Senha já em uso por outro dispositivo.'};
+  // atualiza ou adiciona
+  const idx = arr.findIndex(u=>u.user === user);
+  const entry = {user, senha, ts: Date.now()};
+  if(idx >= 0) arr[idx] = entry; else arr.push(entry);
+  localStorage.setItem(chave, JSON.stringify(arr));
+  // grava usuarioLogado
+  localStorage.setItem('usuarioLogado', user);
+  return {ok:true};
+}
+
 function entrar(){
   const login = document.getElementById('login').value.trim();
   const senha = document.getElementById('senha').value.trim();
-  if(!login || !senha){
-    alert('Preencha login e senha');
-    return;
+  const msgEl = document.getElementById('msg');
+  msgEl.style.display='none';
+  if(!login || !senha){ 
+    msgEl.textContent = 'Preencha login e senha'; msgEl.style.display='block'; return;
   }
+  const usuarios = lerUsuarios();
+  if(!usuarios[login]){ msgEl.textContent='Login não encontrado'; msgEl.style.display='block'; return; }
+  if(usuarios[login] !== senha){ msgEl.textContent='Senha incorreta'; msgEl.style.display='block'; return; }
+  const res = salvarAtivo(login, senha);
+  if(!res.ok){ msgEl.textContent = res.reason; msgEl.style.display='block'; return; }
+  // sucesso -> redireciona ao home
+  window.location.href = 'home.html';
+}
 
-  const usuarios = JSON.parse(localStorage.getItem('usuarios')||'{}');
-  
-  if(!usuarios[login]){
-    alert('Login não encontrado');
-    return;
+function criarSenha(){
+  // abre WhatsApp pronto para você mandar
+  // substitua SEUNUMERO por seu DDI+DDD+NUMERO (ex: 5511912345678)
+  const url = 'https://wa.me/+5521974277322?text=Olá!%20Quero%20uma%20senha%20para%20acessar%20o%20NeonFlix';
+  window.open(url, '_blank');
+}
+
+/* admin toggle + auth */
+function toggleAdmin(){
+  const panel = document.getElementById('adminPanel');
+  if(panel.style.display === 'flex' || panel.style.display === 'block') {
+    panel.style.display = 'none';
+    panel.setAttribute('aria-hidden','true');
+  } else {
+    panel.style.display = 'block';
+    panel.setAttribute('aria-hidden','false');
   }
+}
 
-  if(usuarios[login] !== senha){
-    alert('Senha incorreta');
-    return;
+function adminLogin(){
+  const aUser = document.getElementById('adminLogin').value.trim();
+  const aPass = document.getElementById('adminPass').value.trim();
+  if(aUser === 'Administração' && aPass === '1234'){
+    // redireciona pro admin.html
+    window.location.href = 'admin.html';
+  } else {
+    alert('Credenciais admin incorretas!');
   }
-
-  // opcional: bloquear outra pessoa que tente usar a mesma senha
-  let ativo = JSON.parse(localStorage.getItem('usuariosAtivos')||'{}');
-  if(Object.values(ativo).includes(senha)){
-    alert('Esta senha já está em uso por outro dispositivo!');
-    return;
-  }
-  ativo[login] = senha;
-  localStorage.setItem('usuariosAtivos', JSON.stringify(ativo));
-
-  // sucesso
-  window.location.href='home.html';
 }
 </script>
+
 </body>
 </html>
