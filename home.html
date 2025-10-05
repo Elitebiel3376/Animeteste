@@ -5,66 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NeonFlix</title>
 <style>
-body {
-  margin:0; background:#000; color:#fff; font-family:Arial,sans-serif;
-}
-header {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:15px 30px; background:#0a0a0a; border-bottom:2px solid red;
-  position:sticky; top:0; z-index:1000;
-}
-.logo {
-  font-size:2em; font-weight:bold; color:red; text-shadow:0 0 10px red;
-}
-.menu {
-  display:flex; gap:15px;
-}
-.menu button {
-  background:red; color:#fff; border:none; padding:8px 14px;
-  border-radius:16px; font-weight:bold; cursor:pointer; transition:0.2s;
-}
-.menu button:hover {
-  background:#ff3333; box-shadow:0 0 20px red;
-}
-.section-title {
-  color:red; text-shadow:0 0 10px red; margin:20px; font-size:1.5em;
-}
-.catalogo {
-  display:flex; overflow-x:auto; padding:0 20px 20px 20px; gap:15px;
-}
-.catalogo::-webkit-scrollbar {
-  height:8px;
-}
-.catalogo::-webkit-scrollbar-thumb {
-  background:red; border-radius:10px;
-}
-.anime {
-  position:relative; flex:0 0 auto; width:200px; height:280px;
-  border-radius:10px; overflow:hidden; box-shadow:0 0 10px #ff000055; transition:.3s;
-}
-.anime:hover {
-  transform:scale(1.1); box-shadow:0 0 25px red,0 0 40px #ff0000aa,0 0 60px #ff0000aa;
-}
-.anime img.capa {
-  width:100%; height:100%; object-fit:cover; display:block; transition:.3s;
-}
-.overlay {
-  position:absolute; top:0; left:0; width:100%; height:100%;
-  display:flex; align-items:end; justify-content:center; padding-bottom:10px;
-}
-.btn {
-  background:red; color:white; padding:10px 20px; border-radius:30px;
-  font-weight:bold; text-shadow:0 0 5px black; cursor:pointer; transition:.3s;
-  border:none; font-size:1em; animation:pulse 1.5s infinite;
-}
-.btn:hover {
-  background:#ff3333; box-shadow:0 0 40px red,0 0 10px white;
-}
-@keyframes pulse {
-  0%{box-shadow:0 0 20px red,0 0 5px white;}
-  50%{box-shadow:0 0 40px red,0 0 10px white;}
-  100%{box-shadow:0 0 20px red,0 0 5px white;}
-}
+body{margin:0; background:#000; color:#fff; font-family:Arial,sans-serif;}
+header{display:flex; justify-content:space-between; align-items:center; padding:15px 30px; background:#0a0a0a; border-bottom:2px solid red;}
+.logo{font-size:2em; font-weight:bold; color:red; text-shadow:0 0 10px red;}
+.menu{display:flex; gap:15px;}
+.menu button{background:red; color:#fff; border:none; padding:8px 14px; border-radius:16px; font-weight:bold; cursor:pointer; transition:0.2s;}
+.menu button:hover{background:#ff3333; box-shadow:0 0 20px red;}
+.section-title{color:red; text-shadow:0 0 10px red; margin:20px; font-size:1.5em;}
+.catalogo{display:flex; overflow-x:auto; padding:0 20px 20px 20px; gap:15px;}
+.catalogo::-webkit-scrollbar{height:8px;}
+.catalogo::-webkit-scrollbar-thumb{background:red; border-radius:10px;}
+.anime{position:relative; flex:0 0 auto; width:200px; height:280px; border-radius:10px; overflow:hidden; box-shadow:0 0 10px #ff000055; transition:.3s;}
+.anime:hover{transform:scale(1.1); box-shadow:0 0 25px red,0 0 40px #ff0000aa,0 0 60px #ff0000aa;}
+.anime img.capa{width:100%; height:100%; object-fit:cover; display:block; transition:.3s;}
+.overlay{position:absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:end; justify-content:center; padding-bottom:10px;}
+.btn{background:red; color:white; padding:10px 20px; border-radius:30px; font-weight:bold; text-shadow:0 0 5px black; cursor:pointer; transition:.3s; border:none; font-size:1em; animation:pulse 1.5s infinite;}
+.btn:hover{background:#ff3333; box-shadow:0 0 40px red,0 0 10px white;}
+@keyframes pulse{0%{box-shadow:0 0 20px red,0 0 5px white;}50%{box-shadow:0 0 40px red,0 0 10px white;}100%{box-shadow:0 0 20px red,0 0 5px white;}}
 </style>
 </head>
 <body>
@@ -75,25 +32,30 @@ header {
     <button onclick="filtrar('Series')">Séries</button>
     <button onclick="filtrar('Filmes')">Filmes</button>
     <button onclick="filtrar('Animes')">Animes</button>
-    <button onclick="filtrar('Todos')">Todos</button>
   </div>
 </header>
 
 <div id="conteudo"></div>
 
 <script>
-// Lista de conteúdo
+// Lista de conteúdo com player individual
 const conteudo = [
+  // ANIMES
   {nome:"Demon Slayer", capa:"DemonSlayer.jpg", tipo:"Animes", player:"player-demonslayer.html"},
   {nome:"Circo Digital", capa:"CircoDigital.jpg", tipo:"Animes", player:"player-circo.html"},
   {nome:"Naruto", capa:"Naruto.jpg", tipo:"Animes", player:"player-naruto.html"},
   {nome:"One Piece", capa:"OnePiece.jpg", tipo:"Animes", player:"player-onepiece.html"},
+
+  // SÉRIES
   {nome:"Stranger Things", capa:"StrangerThings.jpg", tipo:"Series", player:"player-stranger.html"},
   {nome:"Arcane", capa:"Arcane.jpg", tipo:"Series", player:"player-arcane.html"},
+
+  // FILMES
   {nome:"Vingadores", capa:"Vingadores.jpg", tipo:"Filmes", player:"player-vingadores.html"},
   {nome:"Matrix", capa:"Matrix.jpg", tipo:"Filmes", player:"player-matrix.html"},
-  {nome:"Os Três Papetas", capa:"OsTresPapetas.jpg", tipo:"Filmes", player:"player-trespapetas.html"},
-  {nome:"Debi Loide 1", capa:"DebiLoide1.jpg", tipo:"Filmes", player:"player-debiloide1.html"}
+  {nome:"Os Três Patetas", capa:"TresPatetas.jpg", tipo:"Filmes", player:"player-trespatetas.html"},
+  {nome:"Debi & Loide", capa:"DebiLoide.jpg", tipo:"Filmes", player:"player-debiloide.html"},
+  {nome:"As Férias de Mr. Bean", capa:"MrBeanFerias.jpg", tipo:"Filmes", player:"player-mrbean.html"}
 ]; 
 
 let conteudoFiltrado = conteudo;
@@ -103,38 +65,35 @@ function renderizar() {
   conteudoEl.innerHTML = '';
   const tipos = ["Series","Filmes","Animes"];
   tipos.forEach(tipo=>{
-    const items = conteudoFiltrado.filter(c=>c.tipo===tipo);
-    if(items.length>0){
-      const tit = document.createElement('h2');
-      tit.className = 'section-title';
-      tit.textContent = tipo;
-      conteudoEl.appendChild(tit);
+    const tit = document.createElement('h2');
+    tit.className = 'section-title';
+    tit.textContent = tipo;
+    conteudoEl.appendChild(tit);
 
-      const div = document.createElement('div');
-      div.className='catalogo';
+    const div = document.createElement('div');
+    div.className='catalogo';
 
-      items.forEach(item=>{
-        const d = document.createElement('div');
-        d.className='anime';
-        d.innerHTML = `
-          <img class="capa" src="${item.capa}" alt="${item.nome}">
-          <div class="overlay">
-            <button class="btn" onclick="assistir('${item.player}')">ASSISTIR</button>
-          </div>
-        `;
-        div.appendChild(d);
-      });
+    conteudoFiltrado.filter(c=>c.tipo===tipo).forEach(item=>{
+      const d = document.createElement('div');
+      d.className='anime';
+      d.innerHTML = `
+        <img class="capa" src="${item.capa}" alt="${item.nome}">
+        <div class="overlay">
+          <button class="btn" onclick="assistir('${item.player}')">ASSISTIR</button>
+        </div>
+      `;
+      div.appendChild(d);
+    });
 
-      conteudoEl.appendChild(div);
-    }
+    conteudoEl.appendChild(div);
   });
 }
 
 function filtrar(tipo){
-  if(tipo==="Todos"){
-    conteudoFiltrado = conteudo;
-  } else {
+  if(tipo==="Series" || tipo==="Filmes" || tipo==="Animes"){
     conteudoFiltrado = conteudo.filter(c=>c.tipo===tipo);
+  } else {
+    conteudoFiltrado = conteudo;
   }
   renderizar();
 }
