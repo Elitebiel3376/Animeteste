@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demon Slayer Player</title>
+<style>
+body { margin:0; background:#000; color:#fff; font-family:Arial,sans-serif; display:flex; flex-direction:column; align-items:center; }
+h1 { color:red; text-shadow:0 0 10px red; margin:20px; }
+video { width:90%; max-width:900px; border-radius:10px; box-shadow:0 0 30px red; margin-bottom:20px; }
+.episodios { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:40px; }
+.episodios button { background:red; color:#fff; border:none; padding:10px 15px; border-radius:20px; cursor:pointer; font-weight:bold; transition:.3s; }
+.episodios button:hover { background:#ff3333; box-shadow:0 0 20px red; }
+</style>
+</head>
+<body>
+
+<h1>Demon Slayer</h1>
+
+<video id="player" controls>
+  <source src="https://drive.google.com/uc?export=download&id=1ISGQ6iD_BxXQMeaVIEdF3qphH1xWAXzi" type="video/mp4">
+  Seu navegador não suporta vídeo HTML5.
+</video>
+
+<div class="episodios" id="episodios"></div>
+
+<script>
+// Lista de episódios com links do Google Drive (somente EP1 por enquanto, depois adiciona o restante)
+const eps = [
+  {num:1, link:"https://drive.google.com/uc?export=download&id=1ISGQ6iD_BxXQMeaVIEdF3qphH1xWAXzi"},
+  // {num:2, link:"LINK_EP2"},
+  // {num:3, link:"LINK_EP3"},
+  // Adicione todos os outros episódios aqui
+];
+
+const container = document.getElementById('episodios');
+const player = document.getElementById('player');
+
+// Cria os botões de episódios
+eps.forEach(ep=>{
+  const btn = document.createElement('button');
+  btn.textContent = "EP " + ep.num;
+  btn.onclick = ()=> {
+    player.src = ep.link;
+    player.play();
+  };
+  container.appendChild(btn);
+});
+</script>
+
+</body>
+</html>
